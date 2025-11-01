@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar Notificação</title>
+</head>
+<body>
+    <h2>Enviar Notificação</h2>
+    <form id="formNotificacao">
+        <label for="conteudo">Mensagem:</label><br>
+        <textarea type="text" id="conteudo" name="conteudo" required style="width:300px;"></textarea><br><br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <div id="resultado" style="margin-top:20px;"></div>
+
+    <script>
+        const form = document.getElementById('formNotificacao');
+        const resultado = document.getElementById('resultado');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // evita o envio padrão do formulário
+
+            const mensagem = document.getElementById('conteudo').value;
+
+            fetch('http://localhost:8081/api/notificacao', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ conteudo: mensagem })
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultado.innerHTML = `<p>Notificação enviada com sucesso!<br>Resposta: ${JSON.stringify(data)}</p>`;
+                form.reset(); // limpa o campo após enviar
+            })
+            .catch(error => {
+                resultado.innerHTML = `<p>Erro ao enviar: ${error}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
